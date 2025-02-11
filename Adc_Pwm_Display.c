@@ -16,9 +16,9 @@
 #define JOYSTICK_BTN 22
 #define BUTTON_A 5
 
-#define LED_RED 11
-#define LED_BLUE 12
-#define LED_GREEN 13
+#define LED_GREEN 11 
+#define LED_BLUE 12 
+#define LED_RED 13
 
 ssd1306_t ssd;
 
@@ -27,6 +27,7 @@ void setup_pwm(uint pin) {
     uint slice = pwm_gpio_to_slice_num(pin);
     pwm_set_wrap(slice, 4095);
     pwm_set_enabled(slice, true);
+    pwm_set_gpio_level(pin, 0); // Garante que os LEDs iniciam apagados
 }
 
 void joystick_irq_handler(uint gpio, uint32_t events) {
@@ -71,8 +72,13 @@ int main() {
         adc_select_input(1);
         uint16_t y_val = adc_read();
         
-        pwm_set_gpio_level(LED_RED, abs(2048 - x_val) * 2);
-        pwm_set_gpio_level(LED_BLUE, abs(2048 - y_val) * 2);
+        // Calcula brilho do LED Azul com base no eixo Y
+        uint16_t blue_brightness = (y_val > 2048) ? (y_val - 2048) * 2 : (2048 - y_val) * 2;
+        pwm_set_gpio_level(LED_BLUE, blue_brightness);
+        
+        // Calcula brilho do LED Vermelho com base no eixo X
+        uint16_t red_brightness = (x_val > 2048) ? (x_val - 2048) * 2 : (2048 - x_val) * 2;
+        pwm_set_gpio_level(LED_RED, red_brightness);
         
         ssd1306_fill(&ssd, false);
         ssd1306_rect(&ssd, (x_val * (WIDTH - 8)) / 4095, (y_val * (HEIGHT - 8)) / 4095, 8, 8, true, true);
