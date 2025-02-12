@@ -20,6 +20,9 @@
 #define LED_BLUE 12
 #define LED_RED 13
 
+#define JOYSTICK_CENTER_X 1902
+#define JOYSTICK_CENTER_Y 1972
+
 ssd1306_t ssd;
 bool pwm_enabled = true;
 bool border_toggle = false;
@@ -92,24 +95,34 @@ int main() {
         adc_select_input(1);
         uint16_t y_val = adc_read();
         
+        // Ajusta os valores para o novo centro
+        int adjusted_x = x_val - JOYSTICK_CENTER_X;
+        int adjusted_y = y_val - JOYSTICK_CENTER_Y;
+        adjusted_x = adjusted_x < -1902 ? -1902 : (adjusted_x > 2193 ? 2193 : adjusted_x);
+        adjusted_y = adjusted_y < -1972 ? -1972 : (adjusted_y > 2123 ? 2123 : adjusted_y);
+        
         if (pwm_enabled) {
             // Calcula brilho do LED Azul com base no eixo X
-            uint16_t blue_brightness = (x_val > 2048) ? (x_val - 2048) * 2 : (2048 - x_val) * 2;
+            uint16_t blue_brightness = abs(adjusted_x) * 2;
             pwm_set_gpio_level(LED_BLUE, blue_brightness);
             
             // Calcula brilho do LED Vermelho com base no eixo Y
-            uint16_t red_brightness = (y_val > 2048) ? (y_val - 2048) * 2 : (2048 - y_val) * 2;
+            uint16_t red_brightness = abs(adjusted_y) * 2;
             pwm_set_gpio_level(LED_RED, red_brightness);
         } else {
             pwm_set_gpio_level(LED_BLUE, 0);
             pwm_set_gpio_level(LED_RED, 0);
         }
         
+        // Mapeia joystick para a tela corretamente
+        uint8_t x_pos = ((adjusted_x + 1902) * (WIDTH - 8)) / 4095;
+        uint8_t y_pos = ((adjusted_y + 1972) * (HEIGHT - 8)) / 4095;
+        
         ssd1306_fill(&ssd, false);
         if (border_toggle) {
             ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, false);
         }
-        ssd1306_rect(&ssd, (x_val * (WIDTH - 8)) / 4095, (y_val * (HEIGHT - 8)) / 4095, 8, 8, true, true);
+        ssd1306_rect(&ssd, x_pos, y_pos, 8, 8, true, true);
         ssd1306_send_data(&ssd);
         
         sleep_ms(50);
