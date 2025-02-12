@@ -55,20 +55,13 @@
       "attrs": { "i2cAddress": "0x3c" }
     },
     {
-      "type": "wokwi-vcc",
-      "id": "vcc1",
-      "top": 110.4,
-      "left": -167.04,
-      "rotate": 270,
-      "attrs": {}
-    },
-    {
       "type": "wokwi-pushbutton",
       "id": "btn1",
       "top": -51.4,
       "left": -153.6,
       "attrs": { "color": "green" }
-    }
+    },
+    { "type": "wokwi-vcc", "id": "vcc1", "top": 125.56, "left": -134.4, "attrs": {} }
   ],
   "connections": [
     [ "pico:GP0", "$serialMonitor:RX", "", [] ],
@@ -84,13 +77,13 @@
     [ "joystick1:SEL", "pico:GP22", "gray", [ "h-28.8", "v67.2" ] ],
     [ "joystick1:HORZ", "pico:GP26", "gold", [ "h-38.4", "v57.6" ] ],
     [ "joystick1:VERT", "pico:GP27", "orange", [ "h-48", "v57.6" ] ],
-    [ "oled1:SDA", "pico:GP14", "orange", [ "v0" ] ],
-    [ "oled1:SCL", "pico:GP15", "magenta", [ "v-28.8", "h0.3" ] ],
-    [ "vcc1:VCC", "oled1:VCC", "red", [ "h76.8", "v48" ] ],
     [ "btn1:1.r", "pico:GND.1", "black", [ "v0" ] ],
     [ "btn1:2.r", "pico:GP5", "#8f4814", [ "h29", "v19.4" ] ],
-    [ "oled1:GND", "pico:GND.4", "black", [ "v0" ] ],
-    [ "pico:3V3_EN", "joystick1:VCC", "magenta", [ "h29.11", "v-19.2" ] ]
+    [ "pico:3V3_EN", "joystick1:VCC", "magenta", [ "h29.11", "v-19.2" ] ],
+    [ "oled1:SDA", "pico:GP14", "orange", [ "v0" ] ],
+    [ "pico:GP15", "oled1:SCL", "magenta", [ "h0" ] ],
+    [ "oled1:VCC", "vcc1:VCC", "red", [ "v0" ] ],
+    [ "oled1:GND", "pico:GND.4", "black", [ "v0" ] ]
   ],
   "dependencies": {}
 }

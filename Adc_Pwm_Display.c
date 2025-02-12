@@ -23,13 +23,13 @@
 #define JOYSTICK_CENTER_X 1902
 #define JOYSTICK_CENTER_Y 1972
 
-//Trecho para modo BOOTSEL com botão B
+// Trecho para modo BOOTSEL com botão B
 #include "pico/bootrom.h"
 #define botaoB 6
 
 ssd1306_t ssd;
 bool pwm_enabled = true;
-bool border_toggle = false;
+int border_style = 0; // 0: sem borda, 1: borda fina, 2: borda grossa
 
 void setup_pwm(uint pin) {
     gpio_set_function(pin, GPIO_FUNC_PWM);
@@ -101,8 +101,8 @@ int main() {
             static bool led_state = false;
             led_state = !led_state;
             gpio_put(LED_GREEN, led_state);
-            border_toggle = !border_toggle;
-            printf("Joystick pressionado, LED Verde: %d, border_toggle: %d\n", led_state, border_toggle);
+            border_style = (border_style + 1) % 3; // Alterna entre 0, 1 e 2
+            printf("Joystick pressionado, LED Verde: %d, border_style: %d\n", led_state, border_style);
         }
         last_joystick_btn_state = current_joystick_btn_state;
         
@@ -145,8 +145,12 @@ int main() {
         uint8_t y_pos = ((adjusted_y + 1972) * (HEIGHT - 8)) / 4095;
         
         ssd1306_fill(&ssd, false);
-        if (border_toggle) {
-            ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, false);
+        // Desenha a borda de acordo com o estilo atual
+        if (border_style == 1) {
+            ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, false); // Borda fina
+        } else if (border_style == 2) {
+            ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, false); // Borda grossa
+            ssd1306_rect(&ssd, 1, 1, WIDTH - 2, HEIGHT - 2, true, false);
         }
         ssd1306_rect(&ssd, x_pos, y_pos, 8, 8, true, true);
         ssd1306_send_data(&ssd);
