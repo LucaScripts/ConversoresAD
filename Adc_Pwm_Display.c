@@ -11,9 +11,9 @@
 #define I2C_SCL 15
 #define DISPLAY_ADDR 0x3C
 
-#define JOYSTICK_X 26
-#define JOYSTICK_Y 27
-#define JOYSTICK_BTN 22
+#define JOYSTICK_X 26 // GPIO para eixo X
+#define JOYSTICK_Y 27 // GPIO para eixo Y
+#define JOYSTICK_BTN 22 // GPIO para botão do Joystick
 #define BUTTON_A 5
 
 #define LED_GREEN 11
@@ -22,6 +22,10 @@
 
 #define JOYSTICK_CENTER_X 1902
 #define JOYSTICK_CENTER_Y 1972
+
+//Trecho para modo BOOTSEL com botão B
+#include "pico/bootrom.h"
+#define botaoB 6
 
 ssd1306_t ssd;
 bool pwm_enabled = true;
@@ -39,25 +43,13 @@ void debounce_delay() {
     sleep_ms(50);
 }
 
-void joystick_irq_handler(uint gpio, uint32_t events) {
-    debounce_delay();
-    static bool led_state = false;
-    if (gpio == JOYSTICK_BTN) {
-        led_state = !led_state;
-        gpio_put(LED_GREEN, led_state);
-        border_toggle = !border_toggle;
-    }
-}
-
-void button_a_irq_handler(uint gpio, uint32_t events) {
-    debounce_delay();
-    if (gpio == BUTTON_A) {
-        pwm_enabled = !pwm_enabled;
-    }
-}
-
 int main() {
     stdio_init_all();
+    
+    // Para ser utilizado o modo BOOTSEL com botão B
+    gpio_init(botaoB);
+    gpio_set_dir(botaoB, GPIO_IN);
+    gpio_pull_up(botaoB);
     
     // Inicializa ADC
     adc_init();
@@ -78,18 +70,52 @@ int main() {
     ssd1306_fill(&ssd, false);
     ssd1306_send_data(&ssd);
     
-    // Configura botões com interrupção
+    // Configura botões
     gpio_init(JOYSTICK_BTN);
     gpio_set_dir(JOYSTICK_BTN, GPIO_IN);
     gpio_pull_up(JOYSTICK_BTN);
-    gpio_set_irq_enabled_with_callback(JOYSTICK_BTN, GPIO_IRQ_EDGE_FALL, true, &joystick_irq_handler);
     
     gpio_init(BUTTON_A);
     gpio_set_dir(BUTTON_A, GPIO_IN);
     gpio_pull_up(BUTTON_A);
-    gpio_set_irq_enabled_with_callback(BUTTON_A, GPIO_IRQ_EDGE_FALL, true, &button_a_irq_handler);
+    
+    // Configura LED Verde
+    gpio_init(LED_GREEN);
+    gpio_set_dir(LED_GREEN, GPIO_OUT);
+    gpio_put(LED_GREEN, false); // Garante que o LED Verde inicia apagado
+    
+    bool last_joystick_btn_state = gpio_get(JOYSTICK_BTN);
+    bool last_button_a_state = gpio_get(BUTTON_A);
     
     while (true) {
+        // Verifica estado do botão B para modo BOOTSEL
+        if (!gpio_get(botaoB)) {
+            printf("Botão B pressionado\n");
+            reset_usb_boot(0, 0);
+        }
+        
+        // Verifica estado do botão do joystick
+        bool current_joystick_btn_state = gpio_get(JOYSTICK_BTN);
+        if (current_joystick_btn_state == false && last_joystick_btn_state == true) {
+            debounce_delay();
+            static bool led_state = false;
+            led_state = !led_state;
+            gpio_put(LED_GREEN, led_state);
+            border_toggle = !border_toggle;
+            printf("Joystick pressionado, LED Verde: %d, border_toggle: %d\n", led_state, border_toggle);
+        }
+        last_joystick_btn_state = current_joystick_btn_state;
+        
+        // Verifica estado do botão A
+        bool current_button_a_state = gpio_get(BUTTON_A);
+        if (current_button_a_state == false && last_button_a_state == true) {
+            debounce_delay();
+            pwm_enabled = !pwm_enabled;
+            printf("Botão A pressionado, PWM habilitado: %d\n", pwm_enabled);
+        }
+        last_button_a_state = current_button_a_state;
+        
+        // Leitura do joystick
         adc_select_input(0);
         uint16_t x_val = adc_read();
         adc_select_input(1);
@@ -124,6 +150,8 @@ int main() {
         }
         ssd1306_rect(&ssd, x_pos, y_pos, 8, 8, true, true);
         ssd1306_send_data(&ssd);
+        
+        printf("x_val: %d, y_val: %d, adjusted_x: %d, adjusted_y: %d, x_pos: %d, y_pos: %d\n", x_val, y_val, adjusted_x, adjusted_y, x_pos, y_pos);
         
         sleep_ms(50);
     }
