@@ -77,6 +77,7 @@
      
      // Inicialização do display OLED
      ssd1306_init(&ssd, WIDTH, HEIGHT, false, DISPLAY_ADDR, I2C_PORT);
+     ssd1306_config(&ssd);
      ssd1306_fill(&ssd, false);
      ssd1306_send_data(&ssd);
  
