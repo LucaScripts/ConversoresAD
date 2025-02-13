@@ -37,7 +37,7 @@
 #define HEIGHT 64
 #define JOYSTICK_CENTER_X 1929 // Ajustado para o valor correto do centro do joystick
 #define JOYSTICK_CENTER_Y 2019 // Ajustado para o valor correto do centro do joystick
-#define MARGEM_ERRO 50 // Margem de erro para considerar o centro
+#define MARGEM_ERRO 60 // Margem de erro para considerar o centro
 
 ssd1306_t ssd;
 bool pwm_enabled = true;
