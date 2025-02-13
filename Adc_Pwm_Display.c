@@ -152,16 +152,13 @@
          // Atualização do display
          ssd1306_fill(&ssd, false);
  
-         // Desenho das bordas
-         switch(border_style) {
-             case 1:
-                 ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, true);
-                 break;
-             case 2:
-                 ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, true);
-                 ssd1306_rect(&ssd, 2, 2, WIDTH-4, HEIGHT-4, true, true);
-                 break;
-         }
+         // Desenha a borda de acordo com o estilo atual
+        if (border_style == 1) {
+            ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, false); // Borda fina
+        } else if (border_style == 2) {
+            ssd1306_rect(&ssd, 0, 0, WIDTH, HEIGHT, true, false); // Borda grossa
+            ssd1306_rect(&ssd, 1, 1, WIDTH - 2, HEIGHT - 2, true, false);
+        }
  
          // Desenho do cursor
          ssd1306_rect(&ssd, x_pos, y_pos, 8, 8, true, true);
