@@ -84,7 +84,7 @@ Abaixo está uma prévia da simulação serial no **Wokwi**:
 
 ![Wokwi](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/diagram.json%20-%20ConversoresAD%20-%20Visual%20Studio%20Code%202025-02-14%2018-49-32.gif?raw=true)
 
-[Demonstração no Wokwi](https://wokwi.com/projects/422902789255096321)
+🔗[Demonstração no Wokwi](https://wokwi.com/projects/422902789255096321)
 
 ---
 ## 🚦 **Demonstração do Projeto**
