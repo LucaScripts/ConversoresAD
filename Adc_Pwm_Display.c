@@ -162,7 +162,7 @@ int main()
         // Movimentos corretos para o eixo Y (direita/esquerda) - Trocar com X
         if (abs(adjusted_x) > DEADZONE)
         {
-            y_pos += (adjusted_x * 5) / 2048; // Ajuste proporcional ao valor do joystick
+            y_pos -= (adjusted_x * 5) / 2048; // Ajuste proporcional ao valor do joystick
         }
 
         // Limitações da tela para não ultrapassar os limites
