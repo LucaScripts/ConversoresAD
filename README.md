@@ -78,12 +78,20 @@ Para baixar o código e começar a trabalhar com ele, clone o repositório e car
 
 ---
 
+🚦 Demonstração da Simulação Wokwi
+Abaixo está uma prévia da simulação da comunicação serial no Wokwi:
+
+![Wokwi](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/diagram.json%20-%20ConversoresAD%20-%20Visual%20Studio%20Code%202025-02-14%2018-49-32.gif?raw=true)
+
+[Demonstração no Wokwi]([https://drive.google.com/file/d/1_ax07drMcusfKGuXP3P1VEitiIQVuKGi/view?usp=sharing](https://wokwi.com/projects/422902789255096321))
+
+---
 ## 🚦 **Demonstração do Projeto**
 
 Abaixo está uma prévia da execução do projeto:
 ![Projeto em Execução](https://github.com/LucaScripts/PWM/blob/main/docs/diagram.json%20-%20pwm.gif?raw=true)  
 
-🔗 [Demonstração no Youtube/Google Drive](https://drive.google.com/file/d/1_ax07drMcusfKGuXP3P1VEitiIQVuKGi/view?usp=sharing)
+🔗 [Demonstração no Google Drive](https://drive.google.com/file/d/1_ax07drMcusfKGuXP3P1VEitiIQVuKGi/view?usp=sharing)
 
 ---
 
