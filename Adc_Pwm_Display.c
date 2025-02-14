@@ -23,8 +23,8 @@
 #define I2C_SCL 15
 #define DISPLAY_ADDR 0x3C
 
-#define JOYSTICK_X 26
-#define JOYSTICK_Y 27
+#define JOYSTICK_X 27
+#define JOYSTICK_Y 26
 #define JOYSTICK_BTN 22
 #define BUTTON_A 5
 #define BUTTON_B 6
@@ -100,7 +100,13 @@ int main()
     int y_pos = 29;
 
     while (true)
-    {
+    {   
+
+        // Ajusta a intensidade do PWM dos LEDs com base no movimento do joystick
+        int pwm_red = 0;
+        int pwm_blue = 0;
+
+        
         if (!gpio_get(BUTTON_B))
         {
             printf("[SISTEMA] Entrando em modo BOOTSEL\n");
@@ -142,6 +148,17 @@ int main()
             x_pos += (adjusted_y * 5) / 2048; // Ajuste proporcional ao valor do joystick
         }
 
+          // Calcula intensidade para o LED Vermelho (eixo Y)
+        if (abs(adjusted_y) > DEADZONE) {
+            int intensidade = abs(adjusted_y) - DEADZONE;
+            pwm_red = (intensidade * 4095) / (4095 - JOYSTICK_CENTER_X - DEADZONE);
+        }
+
+        // Calcula intensidade para o LED Azul (eixo x)
+        if (abs(adjusted_x) > DEADZONE) {
+            int intensidade = abs(adjusted_x) - DEADZONE;
+            pwm_blue = (intensidade * 4095) / (4095 - JOYSTICK_CENTER_Y - DEADZONE);
+        }
         // Movimentos corretos para o eixo Y (direita/esquerda) - Trocar com X
         if (abs(adjusted_x) > DEADZONE)
         {
@@ -186,8 +203,8 @@ int main()
         // Ajusta a intensidade do PWM dos LEDs com base na posição do joystick
         if (pwm_enabled)
         {
-            pwm_set_gpio_level(LED_RED, (adjusted_x + 2048) * 2047 / 4096);
-            pwm_set_gpio_level(LED_BLUE, (adjusted_y + 2048) * 2047 / 4096);
+            pwm_set_gpio_level(LED_RED, pwm_red);
+            pwm_set_gpio_level(LED_BLUE, pwm_blue);
         }
         else
         {
