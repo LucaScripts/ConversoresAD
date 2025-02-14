@@ -98,11 +98,11 @@ Abaixo está uma prévia da simulação serial no **Wokwi**:
 
 Abaixo está uma prévia do display na **BitDogLab**:
 
-![display](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/diagram.json%20-%20ConversoresAD%20-%20Visual%20Studio%20Code%202025-02-14%2018-49-32.gif?raw=true)
+![display](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/gif%20display.gif?raw=true)
 
 Abaixo está uma prévia do RGB na **BitDogLab**:
 
-![RGB PWM](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/diagram.json%20-%20ConversoresAD%20-%20Visual%20Studio%20Code%202025-02-14%2018-49-32.gif?raw=true)
+![RGB PWM](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/gif%20leds.gif?raw=true)
 
 ---
 
