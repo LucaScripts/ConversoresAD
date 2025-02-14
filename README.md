@@ -92,7 +92,7 @@ Abaixo está uma prévia da simulação serial no **Wokwi**:
 Abaixo está uma prévia da execução do projeto:
 ![Projeto em Execução](https://github.com/LucaScripts/PWM/blob/main/docs/diagram.json%20-%20pwm.gif?raw=true)  
 
-🔗 [Demonstração no Google Drive](https://drive.google.com/file/d/1_ax07drMcusfKGuXP3P1VEitiIQVuKGi/view?usp=sharing)
+🔗 [Demonstração no Google Drive](https://drive.google.com/file/d/1Yf2IagRscD4sSIaiZCL9eWhtmOkphgqU/view?usp=sharing)
 
 ---
 
