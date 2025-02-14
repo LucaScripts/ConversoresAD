@@ -87,12 +87,22 @@ Abaixo está uma prévia da simulação serial no **Wokwi**:
 🔗[Demonstração no Wokwi](https://wokwi.com/projects/422902789255096321)
 
 ---
-## 🚦 **Demonstração do Projeto**
 
-Abaixo está uma prévia da execução do projeto:
-![Projeto em Execução](https://github.com/LucaScripts/PWM/blob/main/docs/diagram.json%20-%20pwm.gif?raw=true)  
+## 🚦 **Demonstração do Projeto Video**
 
 🔗 [Demonstração no Google Drive](https://drive.google.com/file/d/1Yf2IagRscD4sSIaiZCL9eWhtmOkphgqU/view?usp=sharing)
+
+---
+
+## 🚦 **Demonstração do Projeto BitDogLab**
+
+Abaixo está uma prévia do display na **BitDogLab**:
+
+![display](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/diagram.json%20-%20ConversoresAD%20-%20Visual%20Studio%20Code%202025-02-14%2018-49-32.gif?raw=true)
+
+Abaixo está uma prévia do RGB na **BitDogLab**:
+
+![RGB PWM](https://github.com/LucaScripts/ConversoresAD/blob/main/docs/diagram.json%20-%20ConversoresAD%20-%20Visual%20Studio%20Code%202025-02-14%2018-49-32.gif?raw=true)
 
 ---
 
