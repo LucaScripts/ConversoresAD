@@ -43,6 +43,7 @@ ssd1306_t ssd;
 bool pwm_enabled = true;
 int border_style = 1;
 
+// Função para configurar o PWM em um pino específico
 void setup_pwm(uint pin)
 {
     gpio_set_function(pin, GPIO_FUNC_PWM);
@@ -52,6 +53,7 @@ void setup_pwm(uint pin)
     pwm_set_gpio_level(pin, 0); // Inicializa o PWM com 0 (sem brilho)
 }
 
+// Função para adicionar um pequeno atraso para debounce
 void debounce_delay()
 {
     sleep_ms(50);
@@ -61,6 +63,7 @@ int main()
 {
     stdio_init_all();
 
+    // Configuração dos botões
     gpio_init(BUTTON_B);
     gpio_set_dir(BUTTON_B, GPIO_IN);
     gpio_pull_up(BUTTON_B);
@@ -69,25 +72,30 @@ int main()
     adc_gpio_init(JOYSTICK_X);
     adc_gpio_init(JOYSTICK_Y);
 
+    // Configuração dos LEDs PWM
     setup_pwm(LED_RED);
     setup_pwm(LED_BLUE);
     setup_pwm(LED_GREEN); // Adiciona o PWM para o LED verde
 
+    // Configuração do I2C para o display OLED
     i2c_init(I2C_PORT, 400 * 1000);
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
 
+    // Inicialização do display OLED
     ssd1306_init(&ssd, WIDTH, HEIGHT, false, DISPLAY_ADDR, I2C_PORT);
     ssd1306_config(&ssd);
     ssd1306_fill(&ssd, false);
     ssd1306_send_data(&ssd);
 
+    // Configuração do botão do joystick
     gpio_init(JOYSTICK_BTN);
     gpio_set_dir(JOYSTICK_BTN, GPIO_IN);
     gpio_pull_up(JOYSTICK_BTN);
 
+    // Configuração do botão A
     gpio_init(BUTTON_A);
     gpio_set_dir(BUTTON_A, GPIO_IN);
     gpio_pull_up(BUTTON_A);
@@ -100,19 +108,19 @@ int main()
     int y_pos = 29;
 
     while (true)
-    {   
-
+    {
         // Ajusta a intensidade do PWM dos LEDs com base no movimento do joystick
         int pwm_red = 0;
         int pwm_blue = 0;
 
-        
+        // Verifica se o botão B foi pressionado para entrar em modo BOOTSEL
         if (!gpio_get(BUTTON_B))
         {
             printf("[SISTEMA] Entrando em modo BOOTSEL\n");
             reset_usb_boot(0, 0);
         }
 
+        // Verifica o estado do botão do joystick
         bool current_joystick_btn_state = gpio_get(JOYSTICK_BTN);
         if (!current_joystick_btn_state && last_joystick_btn_state)
         {
@@ -125,6 +133,7 @@ int main()
         }
         last_joystick_btn_state = current_joystick_btn_state;
 
+        // Verifica o estado do botão A
         bool current_button_a_state = gpio_get(BUTTON_A);
         if (!current_button_a_state && last_button_a_state)
         {
@@ -134,6 +143,7 @@ int main()
         }
         last_button_a_state = current_button_a_state;
 
+        // Leitura dos valores do joystick
         adc_select_input(0);
         uint16_t x_val = adc_read();
         adc_select_input(1);
@@ -148,17 +158,20 @@ int main()
             x_pos += (adjusted_y * 5) / 2048; // Ajuste proporcional ao valor do joystick
         }
 
-          // Calcula intensidade para o LED Vermelho (eixo Y)
-        if (abs(adjusted_y) > DEADZONE) {
+        // Calcula intensidade para o LED Vermelho (eixo Y)
+        if (abs(adjusted_y) > DEADZONE)
+        {
             int intensidade = abs(adjusted_y) - DEADZONE;
             pwm_red = (intensidade * 4095) / (4095 - JOYSTICK_CENTER_X - DEADZONE);
         }
 
-        // Calcula intensidade para o LED Azul (eixo x)
-        if (abs(adjusted_x) > DEADZONE) {
+        // Calcula intensidade para o LED Azul (eixo X)
+        if (abs(adjusted_x) > DEADZONE)
+        {
             int intensidade = abs(adjusted_x) - DEADZONE;
             pwm_blue = (intensidade * 4095) / (4095 - JOYSTICK_CENTER_Y - DEADZONE);
         }
+
         // Movimentos corretos para o eixo Y (direita/esquerda) - Trocar com X
         if (abs(adjusted_x) > DEADZONE)
         {
@@ -179,6 +192,7 @@ int main()
         int inverted_x_pos = y_pos; // Agora y_pos vai para o eixo X
         int inverted_y_pos = x_pos; // Agora x_pos vai para o eixo Y
 
+        // Limpa a tela
         ssd1306_fill(&ssd, false);
 
         // Desenha as bordas
@@ -199,7 +213,6 @@ int main()
 
         printf("[JOYSTICK] X: %4d | Y: %4d | Pos: (%3d, %3d)\n", x_val, y_val, inverted_x_pos, inverted_y_pos);
 
-        // Ajusta a intensidade do PWM dos LEDs com base na posição do joystick (ajustando a intensidade com base no eixo X)
         // Ajusta a intensidade do PWM dos LEDs com base na posição do joystick
         if (pwm_enabled)
         {
@@ -211,6 +224,8 @@ int main()
             pwm_set_gpio_level(LED_RED, 0);
             pwm_set_gpio_level(LED_BLUE, 0);
         }
+
+        // Pequeno atraso para evitar leituras muito rápidas
         sleep_ms(20);
     }
 }
